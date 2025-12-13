@@ -11,7 +11,7 @@ try {
     $state = isset($_GET['state']) ? trim((string) $_GET['state']) : '';
     $district = isset($_GET['district']) ? trim((string) $_GET['district']) : '';
 
-    $query = "SELECT name, geolocation, state, district, hash_code FROM shooting_ranges WHERE status = 'active'";
+    $query = "SELECT name, latitude, longitude, state, district, hash_code FROM shooting_ranges WHERE status = 'active'";
     $params = [];
 
     if ($state !== '') {
@@ -31,13 +31,8 @@ try {
 
     $ranges = [];
     while ($row = $stmt->fetch()) {
-        $geolocation = json_decode($row['geolocation'], true);
-        if (!is_array($geolocation) || !isset($geolocation['lat'], $geolocation['lng'])) {
-            continue;
-        }
-
-        $lat = filter_var($geolocation['lat'], FILTER_VALIDATE_FLOAT);
-        $lng = filter_var($geolocation['lng'], FILTER_VALIDATE_FLOAT);
+        $lat = filter_var($row['latitude'], FILTER_VALIDATE_FLOAT);
+        $lng = filter_var($row['longitude'], FILTER_VALIDATE_FLOAT);
 
         if ($lat === false || $lng === false) {
             continue;
